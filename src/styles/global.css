@@ -1545,22 +1545,50 @@ pre {
 
   /* Work Archive at Mobile */
   .archive-row {
-    grid-template-columns: 28px 1fr;
+    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-areas:
+      "num main"
+      ". meta"
+      ". tech"
+      ". links";
     gap: 12px;
     padding: 22px 0 24px;
+  }
+
+  .archive-num {
+    grid-area: num;
+  }
+
+  .archive-main {
+    grid-area: main;
   }
 
   .archive-title {
     font-size: 26px;
   }
 
+  .archive-meta {
+    grid-area: meta;
+    grid-column: auto;
+    padding-top: 0;
+  }
+
+  .archive-tech-col {
+    grid-area: tech;
+    grid-column: auto;
+    padding-top: 0;
+  }
+
   .archive-links {
-    grid-column: 2;
+    grid-area: links;
+    grid-row: auto;
+    grid-column: auto;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     gap: 16px;
     margin-top: 12px;
+    padding-top: 0;
   }
 
   .archive-link {
