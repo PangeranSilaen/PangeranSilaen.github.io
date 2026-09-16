@@ -941,7 +941,7 @@ pre {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .archive-row:hover .archive-title {
+  .archive-title-link:hover .archive-title {
     transform: translateX(10px);
     color: var(--accent);
   }
