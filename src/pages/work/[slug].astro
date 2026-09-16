@@ -39,13 +39,15 @@ const nextProject =
         <aside class="section-label">
           <strong>01 / Case Study</strong><br /><br />
           {project.data.category}<br />
-          {project.data.period}
+          {project.data.period}<br /><br />
+          {project.data.clientOrContext}
         </aside>
 
         <div class="section-body">
           <header class="case-header reveal">
             <a href="/work" class="case-back-link">
-              ← Return to Project Index
+              <span class="arrow" aria-hidden="true">←</span>
+              <span>PROJECT INDEX</span>
             </a>
             <h1 class="case-title">{project.data.title}</h1>
             <p class="case-summary">{project.data.shortDescription}</p>
@@ -112,26 +114,36 @@ const nextProject =
             <Content />
           </article>
 
-          <nav class="case-nav" aria-label="Project navigation">
-            <div>
+          <nav class="case-nav" aria-label="Project pagination">
+            <div class="prev-wrap">
               {prevProject ? (
                 <a href={`/work/${prevProject.id}`}>
-                  ← {prevProject.data.title}
+                  <span class="arrow" aria-hidden="true">←</span>
+                  <span>{prevProject.data.title}</span>
                 </a>
               ) : (
-                <a href="/work">← Back to Index</a>
+                <a href="/work">
+                  <span class="arrow" aria-hidden="true">←</span>
+                  <span>PROJECT INDEX</span>
+                </a>
               )}
             </div>
-            <div>
-              <a href="/work">Index [{allProjects.length}]</a>
+            <div class="index-wrap">
+              <a href="/work">
+                <span>INDEX [{allProjects.length}]</span>
+              </a>
             </div>
-            <div>
+            <div class="next-wrap">
               {nextProject ? (
                 <a href={`/work/${nextProject.id}`}>
-                  {nextProject.data.title} →
+                  <span>{nextProject.data.title}</span>
+                  <span class="arrow" aria-hidden="true">→</span>
                 </a>
               ) : (
-                <a href="/work">All Projects →</a>
+                <a href="/work">
+                  <span>PROJECT INDEX</span>
+                  <span class="arrow" aria-hidden="true">→</span>
+                </a>
               )}
             </div>
           </nav>
