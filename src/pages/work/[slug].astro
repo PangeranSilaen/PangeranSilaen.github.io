@@ -1,0 +1,144 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ContactSection from '../../components/ContactSection.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// Previous and next project calculation
+const allProjects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const currentIndex = allProjects.findIndex((p) => p.id === project.id);
+const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject =
+  currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+---
+
+<Layout
+  title={`${project.data.title} — Case Study`}
+  description={project.data.shortDescription}
+>
+  <main>
+    <section class="section">
+      <div class="section-grid">
+        <aside class="section-label">
+          <strong>01 / Case Study</strong><br /><br />
+          {project.data.category}<br />
+          {project.data.period}
+        </aside>
+
+        <div class="section-body">
+          <header class="case-header reveal">
+            <a href="/work" class="case-back-link">
+              ← Return to Project Index
+            </a>
+            <h1 class="case-title">{project.data.title}</h1>
+            <p class="case-summary">{project.data.shortDescription}</p>
+          </header>
+
+          <div class="case-meta-grid reveal">
+            <div class="case-meta-item">
+              <strong>Role & Scope</strong>
+              <span>{project.data.role}</span>
+            </div>
+
+            <div class="case-meta-item">
+              <strong>Context / Organization</strong>
+              <span>{project.data.clientOrContext}</span>
+            </div>
+
+            <div class="case-meta-item">
+              <strong>Core Technologies</strong>
+              <span>{project.data.tech}</span>
+            </div>
+
+            <div class="case-meta-item">
+              <strong>Artifacts & Source</strong>
+              <span>
+                {project.data.repository ? (
+                  <a
+                    href={project.data.repository}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-link-button"
+                  >
+                    Public Repository ↗
+                  </a>
+                ) : (
+                  'Internal / Private Codebase'
+                )}
+                {project.data.liveUrl && (
+                  <a
+                    href={project.data.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-link-button"
+                    style="margin-left: 12px;"
+                  >
+                    Live Deployment ↗
+                  </a>
+                )}
+              </span>
+            </div>
+          </div>
+
+          {project.data.deliverables && project.data.deliverables.length > 0 && (
+            <div class="case-deliverables reveal">
+              <h3>Key Deliverables & Systems</h3>
+              <ul>
+                {project.data.deliverables.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <article class="prose reveal">
+            <Content />
+          </article>
+
+          <nav class="case-nav" aria-label="Project navigation">
+            <div>
+              {prevProject ? (
+                <a href={`/work/${prevProject.id}`}>
+                  ← {prevProject.data.title}
+                </a>
+              ) : (
+                <a href="/work">← Back to Index</a>
+              )}
+            </div>
+            <div>
+              <a href="/work">Index [{allProjects.length}]</a>
+            </div>
+            <div>
+              {nextProject ? (
+                <a href={`/work/${nextProject.id}`}>
+                  {nextProject.data.title} →
+                </a>
+              ) : (
+                <a href="/work">All Projects →</a>
+              )}
+            </div>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <ContactSection />
+  </main>
+</Layout>

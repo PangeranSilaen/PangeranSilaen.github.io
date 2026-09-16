@@ -1,0 +1,79 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Topbar from '../components/Topbar.astro';
+import Ticker from '../components/Ticker.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Pangeran Borneo Silaen',
+  description = 'Portfolio of Pangeran Borneo Silaen — software engineer building web, mobile, and systems products.',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://pangeransilaen.github.io');
+const currentPath = Astro.url.pathname;
+const formattedTitle = title === 'Pangeran Borneo Silaen' ? title : `${title} — Pangeran Borneo Silaen`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#e7e2d4" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{formattedTitle}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={formattedTitle} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={formattedTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <div class="page">
+      <Topbar currentPath={currentPath} />
+      <slot />
+    </div>
+
+    <Ticker />
+
+    <script>
+      function setupRevealObserver() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.08,
+            rootMargin: '0px 0px -8% 0px',
+          }
+        );
+
+        document.querySelectorAll('.reveal:not(.in)').forEach((el) => {
+          observer.observe(el);
+        });
+      }
+
+      setupRevealObserver();
+      document.addEventListener('astro:page-load', setupRevealObserver);
+    </script>
+  </body>
+</html>

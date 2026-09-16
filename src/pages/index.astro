@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectsAccordion from '../components/ProjectsAccordion.astro';
+import ExperienceLedger from '../components/ExperienceLedger.astro';
+import WorkingProfile from '../components/WorkingProfile.astro';
+import ContactSection from '../components/ContactSection.astro';
+
+const allProjects = await getCollection('projects');
+const selectedProjects = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout>
+  <main>
+    <Hero />
+
+    <section class="section" id="work">
+      <div class="section-grid">
+        <aside class="section-label">
+          <strong>01 / Project Index</strong><br /><br />
+          Selected work.<br />
+          Production, academic,<br />
+          and experimental.
+        </aside>
+
+        <div class="section-body">
+          <div class="section-intro reveal">
+            <h2>Systems I’ve built.</h2>
+            <div>
+              <p>
+                A compact index of projects that taught me something useful about products, systems, interfaces, or integration.
+              </p>
+              <div class="section-intro-actions">
+                <a href="/work" class="text-link-button">
+                  Full Work Archive [{allProjects.length}] ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <ProjectsAccordion projects={selectedProjects} />
+        </div>
+      </div>
+    </section>
+
+    <ExperienceLedger />
+    <WorkingProfile />
+    <ContactSection />
+  </main>
+</Layout>

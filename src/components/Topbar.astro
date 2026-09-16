@@ -1,0 +1,33 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+const isHome = currentPath === '/';
+const isWork = currentPath.startsWith('/work');
+---
+
+<header class="topbar">
+  <div>
+    <a href={isHome ? '#top' : '/'} class="brand">
+      <strong>PBS / Portfolio</strong>
+    </a>
+  </div>
+  <div class="center">Software Engineering · Web · Systems</div>
+  <div class="right">
+    {isHome ? (
+      <>
+        <a href="#work">Index</a>
+        <a href="/work">Archive</a>
+        <a href="mailto:pangeranborneo9@gmail.com">Email</a>
+      </>
+    ) : (
+      <>
+        <a href="/">Home</a>
+        <a href="/work" class={isWork ? 'active' : ''}>Index</a>
+        <a href="mailto:pangeranborneo9@gmail.com">Email</a>
+      </>
+    )}
+  </div>
+</header>

@@ -1,0 +1,36 @@
+---
+import { experiences } from '../data/experience';
+
+const featuredExperiences = experiences.filter((e) => e.featured);
+---
+
+<section class="section" id="experience">
+  <div class="section-grid">
+    <aside class="section-label">
+      <strong>02 / Experience Ledger</strong><br /><br />
+      Roles, places,<br />
+      and the useful parts.
+    </aside>
+
+    <div class="section-body">
+      <div class="section-intro reveal">
+        <h2>Work, study, responsibility.</h2>
+        <p>
+          I’m still early in my career, so I care more about what I actually handled than inflated titles.
+        </p>
+      </div>
+
+      <div class="ledger reveal">
+        {
+          featuredExperiences.map((exp) => (
+            <article class="ledger-row">
+              <div class="ledger-date">{exp.date}</div>
+              <div class="ledger-role">{exp.role}</div>
+              <p class="ledger-copy">{exp.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
