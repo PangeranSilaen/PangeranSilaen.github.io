@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<div class="projects reveal" data-projects-accordion>
+  {
+    projects.map((project, index) => {
+      const numStr = String(index + 1).padStart(2, '0');
+      const isOpen = index === 0;
+      const panelId = `panel-${project.id}`;
+      const buttonId = `btn-${project.id}`;
+
+      return (
+        <article class={`project ${isOpen ? 'open' : ''}`} data-project-item>
+          <button
+            class="project-toggle"
+            type="button"
+            id={buttonId}
+            aria-expanded={isOpen ? 'true' : 'false'}
+            aria-controls={panelId}
+          >
+            <span class="project-num">{numStr}</span>
+            <span class="project-title-hit">
+              <span class="project-title">{project.data.title}</span>
+            </span>
+            <span class="project-tech">{project.data.tech}</span>
+            <span class="project-sign" aria-hidden="true">+</span>
+          </button>
+          <div
+            class="project-panel"
+            id={panelId}
+            role="region"
+            aria-labelledby={buttonId}
+          >
+            <div class="project-panel-inner">
+              <div class="project-content">
+                <span></span>
+                <p>{project.data.shortDescription}</p>
+                <div class="project-links">
+                  <a href={`/work/${project.id}`}>Case Study ↗</a>
+                  {project.data.repository && (
+                    <a
+                      href={project.data.repository}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Repository ↗
+                    </a>
+                  )}
+                  {project.data.liveUrl && (
+                    <a
+                      href={project.data.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Live Demo ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      );
+    })
+  }
+</div>
+
+<script>
+  function setupAccordion() {
+    const containers = document.querySelectorAll<HTMLElement>('[data-projects-accordion]');
+    const ticker = document.getElementById('ticker');
+
+    containers.forEach((container) => {
+      const items = [...container.querySelectorAll<HTMLElement>('[data-project-item]')];
+
+      items.forEach((item) => {
+        const button = item.querySelector<HTMLButtonElement>('.project-toggle');
+        if (!button) return;
+
+        button.onclick = () => {
+          const isCurrentlyOpen = item.classList.contains('open');
+
+          items.forEach((other) => {
+            other.classList.remove('open');
+            other.querySelector('.project-toggle')?.setAttribute('aria-expanded', 'false');
+          });
+
+          if (!isCurrentlyOpen) {
+            item.classList.add('open');
+            button.setAttribute('aria-expanded', 'true');
+
+            if (ticker) {
+              ticker.classList.add('show');
+              if ((window as any).__tickerTimer) {
+                clearTimeout((window as any).__tickerTimer);
+              }
+              (window as any).__tickerTimer = setTimeout(() => {
+                ticker.classList.remove('show');
+              }, 900);
+            }
+          }
+        };
+      });
+    });
+  }
+
+  // Support direct load & Astro View Transitions
+  setupAccordion();
+  document.addEventListener('astro:page-load', setupAccordion);
+</script>

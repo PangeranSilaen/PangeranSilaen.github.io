@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ContactSection from '../../components/ContactSection.astro';
+
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout
+  title="Work Index"
+  description="Complete index of software engineering projects, internal platforms, mobile apps, and systems built by Pangeran Borneo Silaen."
+>
+  <main>
+    <section class="section" id="archive">
+      <div class="section-grid">
+        <aside class="section-label">
+          <strong>01 / Archive</strong><br /><br />
+          Full index.<br />
+          Production, internal,<br />
+          and systems.
+        </aside>
+
+        <div class="section-body">
+          <div class="section-intro reveal">
+            <div>
+              <h2>All Projects & Systems.</h2>
+              <p>
+                Complete catalog of platforms, tools, mobile applications, and low-level protocol integrations built with real constraints.
+              </p>
+            </div>
+            <div class="section-intro-actions">
+              <a href="/" class="nav-back-link">
+                <span class="arrow" aria-hidden="true">←</span>
+                <span>FEATURED WORK</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="archive-list reveal">
+            <div class="archive-header" aria-hidden="true">
+              <span>NO.</span>
+              <span>PROJECT / SUMMARY</span>
+              <span>DISCIPLINE / CONTEXT</span>
+              <span>TECHNOLOGIES</span>
+              <span style="text-align: right;">ACCESS</span>
+            </div>
+
+            {
+              sortedProjects.map((project, index) => {
+                const numStr = String(index + 1).padStart(2, '0');
+                return (
+                  <article class="archive-row">
+                    <span class="archive-num">{numStr}</span>
+                    <div class="archive-main">
+                      <a href={`/work/${project.id}`} class="archive-title-link">
+                        <span class="archive-title">{project.data.title}</span>
+                      </a>
+                      <p class="archive-desc">{project.data.shortDescription}</p>
+                    </div>
+                    <div class="archive-meta">
+                      <span class="archive-category">{project.data.category}</span>
+                      <span class="archive-context">{project.data.clientOrContext}</span>
+                    </div>
+                    <div class="archive-tech-col">
+                      <span class="archive-tech">{project.data.tech}</span>
+                      <span class="archive-period">{project.data.period}</span>
+                    </div>
+                    <div class="archive-links">
+                      <a href={`/work/${project.id}`} class="archive-link">
+                        Case Study ↗
+                      </a>
+                      {project.data.repository && (
+                        <a
+                          href={project.data.repository}
+                          target="_blank"
+                          rel="noreferrer"
+                          class="archive-link"
+                        >
+                          Repository ↗
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <ContactSection />
+  </main>
+</Layout>
